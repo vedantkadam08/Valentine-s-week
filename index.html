@@ -7,204 +7,179 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-pink: #ffafbd;
-            --soft-purple: #c9ffbf; /* Will be used in gradient */
-            --deep-rose: #ff4b2b;
-            --glass: rgba(255, 255, 255, 0.2);
+            --bg-gradient: linear-gradient(135deg, #ffafbd 0%, #c3a0ff 50%, #ffc3a0 100%);
+            --accent: #d63384;
+            --text: #4a4a4a;
+            --glass: rgba(255, 255, 255, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.7);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #ffafbd, #ffc3a0, #e295ff, #c3a0ff);
+            background: var(--bg-gradient);
             background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: #4a4a4a;
+            animation: gradientMove 15s ease infinite;
+            color: var(--text);
             min-height: 100vh;
-            overflow-x: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
         }
 
-        @keyframes gradientBG {
+        @keyframes gradientMove {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* --- UI Components --- */
-        .container {
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-            text-align: center;
-            padding-bottom: 100px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            margin-top: 20px;
-            transition: transform 0.4s ease;
-        }
-
-        h1, h2 { font-family: 'Dancing Script', cursive; color: #d63384; }
-        
-        .btn {
-            background: #d63384;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 15px;
-            transition: 0.3s;
-        }
-        .btn:hover { transform: scale(1.05); background: #b02a6b; }
-
-        /* --- Navigation --- */
-        nav {
-            position: fixed;
-            bottom: 20px;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 10px 20px;
-            border-radius: 50px;
-            display: flex;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-        nav button { background: none; border: none; font-size: 20px; cursor: pointer; }
-
-        /* --- Grid --- */
-        .day-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .day-card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: 0.3s;
-        }
-        .locked { filter: blur(3px) grayscale(1); opacity: 0.8; }
-        .lock-icon { font-size: 24px; display: block; margin-bottom: 5px; }
-
-        /* --- Animations --- */
-        .fade-in { animation: fadeIn 0.8s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .hidden { display: none; }
-
-        #heart-bg {
+        #heart-container {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
-            z-index: -1;
+            z-index: 0;
         }
 
-        /* --- Music Controls --- */
-        .music-control {
+        .container {
+            width: 90%;
+            max-width: 500px;
+            margin-top: 40px;
+            margin-bottom: 120px;
+            z-index: 10;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            margin-bottom: 25px;
+            transition: transform 0.4s ease;
+        }
+
+        h1 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--accent); }
+        h2 { font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--accent); }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .day-box {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 20px;
+            cursor: pointer;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            transition: 0.3s;
+        }
+
+        .day-box:active { transform: scale(0.95); }
+        .day-box.locked { filter: blur(2px) grayscale(1); opacity: 0.7; }
+
+        nav {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1001;
+            bottom: 30px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 10px 30px;
+            display: flex;
+            gap: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 100;
         }
 
-        /* --- Special Sections --- */
-        .handwritten { font-family: 'Dancing Script', cursive; font-size: 1.4rem; line-height: 1.6; }
-        .easter-egg { cursor: pointer; display: inline-block; font-size: 1.2rem; margin: 10px; transition: 0.5s; }
-        
-        /* Hug Animation */
+        .nav-btn { font-size: 1.5rem; cursor: pointer; border: none; background: none; }
+
+        .hidden { display: none; }
+        .fade-in { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn-action {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .handwritten { font-family: 'Dancing Script', cursive; font-size: 1.3rem; line-height: 1.6; }
+
         .hug-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(214, 51, 132, 0.2);
+            inset: 0;
+            background: rgba(214, 51, 132, 0.3);
             display: none;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 2000;
+            backdrop-filter: blur(8px);
         }
-        .hug-pulse {
-            width: 200px; height: 200px;
-            background: #ff4b2b;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.5); opacity: 0.3; } 100% { transform: scale(1); opacity: 0.8; } }
+
+        .pulse-heart { font-size: 80px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
     </style>
 </head>
-<body>
+<body onclick="startMusic()">
 
-    <div id="heart-bg"></div>
-
-    <div class="music-control">
-        <button id="musicToggle" class="btn" onclick="toggleMusic()">🎵 Play Music</button>
-        <audio id="bgMusic" loop>
-            <source src="romantic.mp3" type="audio/mpeg">
-        </audio>
-    </div>
+    <div id="heart-container"></div>
+    <audio id="bgMusic" loop>
+        <source src="romantic.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="container">
-        
-        <section id="home" class="page fade-in">
-            <h1>Hey Babde 🤍</h1>
-            <p>Welcome, Siddhavi 💖</p>
-            <p style="font-size: 0.9rem; margin-top: 5px;">This Valentine’s Week is only for you, Babde.</p>
-            
-            <div class="day-grid" id="dayGrid">
-                </div>
+        <section id="home" class="fade-in">
+            <div class="glass-card">
+                <h1>Hey Babde 🤍</h1>
+                <p>Welcome, Siddhavi 💖</p>
+                <p style="font-size: 0.9rem; margin-top: 5px;">This Valentine’s Week is only for you, Babde.</p>
+            </div>
 
-            <div class="card" style="margin-top: 40px;">
+            <div class="grid" id="dayGrid"></div>
+
+            <div class="glass-card" style="margin-top: 25px;">
                 <h3>Why I love you...</h3>
-                <p>I love you because you make the world feel quieter. Your laugh is my favorite song, and your heart is my favorite place to be. You're my best friend and my home, Babde. 🤍</p>
-                <div class="easter-egg" id="easterEgg">🤍</div>
-                <div id="eggMessage" class="hidden handwritten" style="margin-top: 15px; color: #d63384;">
-                    If you found this... it means you were curious — and I love that about you. This little secret is just to remind you that I’m always here, loving you quietly, endlessly. — your Babde 🤍
+                <p style="margin: 10px 0;">I love you because you make the world feel quieter. Your laugh is my favorite song, and your heart is my favorite place to be. You're my best friend and my home, Babde. 🤍</p>
+                <span id="easterEgg" style="cursor: pointer; font-size: 1.2rem; opacity: 0.5;">🤍</span>
+                <div id="eggMessage" class="hidden handwritten" style="margin-top: 15px; color: var(--accent);">
+                    If you found this… it means you were curious — and I love that about you. This little secret is just to remind you that I’m always here, loving you quietly, endlessly. — your Babde 🤍
                 </div>
             </div>
         </section>
 
-        <section id="content" class="page hidden fade-in">
-            <div id="countdown-area" class="card hidden">
-                <h2 id="unlock-date-text"></h2>
-                <div id="timer" style="font-size: 1.5rem; font-weight: bold; margin: 15px 0;"></div>
-                <button class="btn" onclick="showPage('home')">Back to Home</button>
-            </div>
-
-            <div id="unlocked-content" class="card hidden">
-                <h2 id="page-title"></h2>
-                <div id="page-body" class="handwritten" style="margin: 20px 0;"></div>
-                <div id="special-action"></div>
-                <button class="btn" onclick="showPage('home')">Back to Home</button>
+        <section id="viewer" class="hidden fade-in">
+            <div class="glass-card">
+                <h2 id="viewTitle"></h2>
+                <div id="viewBody" class="handwritten" style="margin: 20px 0;"></div>
+                <div id="viewExtra"></div>
+                <button class="btn-action" onclick="showPage('home')" style="background:none; color:var(--accent); border:1px solid var(--accent);">Back to Home</button>
             </div>
         </section>
-
     </div>
 
     <nav>
-        <button onclick="showPage('home')">🏠</button>
-        <button onclick="checkAndShow(7)">🌹</button>
-        <button onclick="checkAndShow(14)">❤️</button>
+        <button class="nav-btn" onclick="showPage('home')">🏠</button>
+        <button class="nav-btn" onclick="checkDay(7)">🌹</button>
+        <button class="nav-btn" onclick="checkDay(14)">❤️</button>
     </nav>
 
-    <div class="hug-overlay" id="hugOverlay">
-        <div class="hug-pulse"></div>
-        <div style="position: absolute; color: white; font-weight: bold; text-align: center;">
-            Sending the tightest hug to my Babde… 🤍
-        </div>
+    <div id="hugOverlay" class="hug-overlay">
+        <div class="pulse-heart">🫂</div>
+        <p style="color: white; font-weight: bold; margin-top: 20px;">Sending the tightest hug to my Babde… 🤍</p>
     </div>
 
     <script>
@@ -216,145 +191,116 @@
             11: { name: "Promise Day", date: "2026-02-11", icon: "🤝", msg: "I promise to always hold your hand through the highs and the lows." },
             12: { name: "Hug Day", date: "2026-02-12", icon: "🫂", msg: "Everything feels better when I'm in your arms.", hug: true },
             13: { name: "Kiss Day", date: "2026-02-13", icon: "💋", msg: "Sending you a million virtual kisses, Siddhavi! 🤍" },
-            14: { name: "Valentine's Day", date: "2026-02-14", icon: "❤️", msg: `Happy Valentine’s Day, Siddhavi 🤍<br><br>I don’t think I tell you enough how much calmer life feels with you in it. With you, even the ordinary days feel lighter... Being with you feels like coming home, not to a place, but to a feeling. One where I can be myself completely and still feel chosen.<br><br>I love how you care, how you notice the small things, how you stay. I love the comfort you give without even realizing it.<br><br>This Valentine’s Week, and every day after it, I choose you — not because it’s special, but because it feels right. You make love feel gentle, real, and steady, and that’s everything I could ever want.<br><br>Thank you for being you. Thank you for being mine. Happy Valentine’s Day, my Siddhavi.<br><br>Always your Babde 🤍` }
+            14: { name: "Valentine's Day", date: "2026-02-14", icon: "💝", msg: `Happy Valentine’s Day, Siddhavi 🤍<br><br>I don’t think I tell you enough how much calmer life feels with you in it.<br><br>With you, even the ordinary days feel lighter, like I don’t have to try so hard to be okay — I just am.<br><br>You have this way of making things feel safe. Being with you feels like coming home, not to a place, but to a feeling. One where I can be myself completely and still feel chosen.<br><br>I love how you care, how you notice the small things, how you stay. I love the comfort you give without even realizing it, and how just knowing you’re there changes my whole day.<br><br>This Valentine’s Week, and every day after it, I choose you — not because it’s special, but because it feels right. You make love feel gentle, real, and steady, and that’s everything I could ever want.<br><br>Thank you for being you.<br>Thank you for being mine.<br>Happy Valentine’s Day, my Siddhavi.<br><br>Always your Babde 🤍` }
         };
 
-        // --- SPA Navigation Logic ---
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
+        // Music Logic
+        let musicActive = false;
+        function startMusic() {
+            if(!musicActive) {
+                const audio = document.getElementById('bgMusic');
+                audio.play().catch(e => console.log("Audio waiting for interaction"));
+                musicActive = true;
+            }
+        }
+
+        // Navigation
+        function showPage(id) {
+            document.getElementById('home').classList.add('hidden');
+            document.getElementById('viewer').classList.add('hidden');
+            document.getElementById(id).classList.remove('hidden');
             window.scrollTo(0,0);
         }
 
-        // --- Date Unlocking Logic ---
-        function checkAndShow(day) {
+        function checkDay(day) {
             const data = VALENTINE_DATA[day];
             const targetDate = new Date(data.date + "T00:00:00");
             const now = new Date();
-
-            showPage('content');
             
+            showPage('viewer');
+            const body = document.getElementById('viewBody');
+            const extra = document.getElementById('viewExtra');
+            extra.innerHTML = "";
+
             if (now >= targetDate) {
-                // UNLOCKED
-                document.getElementById('countdown-area').classList.add('hidden');
-                document.getElementById('unlocked-content').classList.remove('hidden');
-                document.getElementById('page-title').innerText = data.name;
-                document.getElementById('page-body').innerHTML = data.msg;
-                
-                const actionArea = document.getElementById('special-action');
-                actionArea.innerHTML = '';
+                document.getElementById('viewTitle').innerText = data.name;
+                body.innerHTML = data.msg;
                 if(data.hug) {
-                    actionArea.innerHTML = `<button class="btn" onclick="triggerHug()">Send virtual hug to Babde 🤍</button>`;
+                    extra.innerHTML = `<button class="btn-action" onclick="triggerHug()">Send virtual hug to Babde 🤍</button>`;
                 }
             } else {
-                // LOCKED - Countdown Logic
-                document.getElementById('unlocked-content').classList.add('hidden');
-                document.getElementById('countdown-area').classList.remove('hidden');
-                document.getElementById('unlock-date-text').innerText = `⏳ Babde, this surprise unlocks on Feb ${day} 🤍`;
-                
+                document.getElementById('viewTitle').innerText = "Locked 🔒";
+                body.innerHTML = `⏳ Babde, this surprise unlocks on Feb ${day} 🤍<br><br><div id="timer" style="font-weight:bold; font-size:1.4rem;"></div>`;
                 startCountdown(targetDate);
             }
         }
 
-        let timerInterval;
+        // Countdown Logic
+        let timerInt;
         function startCountdown(target) {
-            clearInterval(timerInterval);
-            const timerEl = document.getElementById('timer');
-            
-            timerInterval = setInterval(() => {
-                const now = new Date().getTime();
-                const diff = target - now;
-                
-                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                const diff = target - new Date();
+                if (diff <= 0) { clearInterval(timerInt); location.reload(); }
+                const h = Math.floor(diff / (1000 * 60 * 60));
                 const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const s = Math.floor((diff % (1000 * 60)) / 1000);
-                
-                timerEl.innerHTML = `${d}d ${h}h ${m}m ${s}s`;
-                
-                if (diff < 0) {
-                    clearInterval(timerInterval);
-                    location.reload(); // Refresh to unlock
-                }
+                const el = document.getElementById('timer');
+                if(el) el.innerHTML = `${h}h ${m}m ${s}s`;
             }, 1000);
         }
 
-        // --- Initialization ---
-        function initHome() {
-            const grid = document.getElementById('dayGrid');
-            const now = new Date();
-
-            for (let day in VALENTINE_DATA) {
-                const data = VALENTINE_DATA[day];
-                const targetDate = new Date(data.date + "T00:00:00");
-                const isLocked = now < targetDate;
-                
-                const div = document.createElement('div');
-                div.className = `day-card ${isLocked ? 'locked' : ''}`;
-                div.onclick = () => checkAndShow(day);
-                div.innerHTML = `
-                    ${isLocked ? '<span class="lock-icon">🔒</span>' : `<span style="font-size:24px">${data.icon}</span>`}
-                    <div style="font-weight:600">Feb ${day}</div>
-                    <div style="font-size:0.8rem">${data.name}</div>
-                `;
-                grid.appendChild(div);
-            }
-        }
-
-        // --- Easter Egg ---
-        let eggClicks = 0;
-        document.getElementById('easterEgg').addEventListener('click', () => {
-            eggClicks++;
-            if(eggClicks >= 5) {
-                document.getElementById('eggMessage').classList.remove('hidden');
-                document.getElementById('easterEgg').style.transform = "scale(2) rotate(360deg)";
-            }
-        });
-
-        // --- Music Control ---
-        function toggleMusic() {
-            const music = document.getElementById('bgMusic');
-            const btn = document.getElementById('musicToggle');
-            if (music.paused) {
-                music.play();
-                btn.innerText = "⏸ Pause Music";
-            } else {
-                music.pause();
-                btn.innerText = "🎵 Play Music";
-            }
-        }
-
-        // --- Hug Animation ---
+        // Hug Animation
         function triggerHug() {
             const overlay = document.getElementById('hugOverlay');
             overlay.style.display = 'flex';
-            setTimeout(() => {
-                overlay.style.display = 'none';
-            }, 4000);
+            setTimeout(() => overlay.style.display = 'none', 4000);
         }
 
-        // --- Background Hearts ---
+        // Easter Egg
+        let eggCount = 0;
+        document.getElementById('easterEgg').onclick = () => {
+            eggCount++;
+            if(eggCount >= 5) document.getElementById('eggMessage').classList.remove('hidden');
+        };
+
+        // Initialize Home Grid
+        const grid = document.getElementById('dayGrid');
+        const now = new Date();
+        Object.keys(VALENTINE_DATA).forEach(day => {
+            const data = VALENTINE_DATA[day];
+            const isLocked = now < new Date(data.date + "T00:00:00");
+            const box = document.createElement('div');
+            box.className = `day-box ${isLocked ? 'locked' : ''}`;
+            box.onclick = () => checkDay(day);
+            box.innerHTML = `
+                <div style="font-size:1.5rem">${isLocked ? '🔒' : data.icon}</div>
+                <div style="font-weight:600; font-size:0.8rem">Feb ${day}</div>
+            `;
+            grid.appendChild(box);
+        });
+
+        // Background Hearts
         function createHeart() {
+            const container = document.getElementById('heart-container');
             const heart = document.createElement('div');
             heart.innerHTML = '🤍';
-            heart.style.position = 'fixed';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.top = '110vh';
-            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            heart.style.opacity = Math.random();
-            heart.style.transition = 'transform 5s linear, opacity 5s';
-            document.getElementById('heart-bg').appendChild(heart);
-
+            heart.style.cssText = `
+                position: fixed; 
+                left: ${Math.random() * 100}%; 
+                bottom: -20px; 
+                font-size: ${Math.random() * 20 + 10}px; 
+                opacity: ${Math.random()}; 
+                transition: transform 6s linear, opacity 6s;
+            `;
+            container.appendChild(heart);
             setTimeout(() => {
-                heart.style.transform = `translateY(-120vh) rotate(${Math.random() * 360}deg)`;
+                heart.style.transform = `translateY(-110vh) rotate(${Math.random() * 360}deg)`;
                 heart.style.opacity = '0';
             }, 100);
-
-            setTimeout(() => heart.remove(), 6000);
+            setTimeout(() => heart.remove(), 7000);
         }
-        setInterval(createHeart, 500);
-
-        initHome();
+        setInterval(createHeart, 600);
     </script>
 </body>
 </html>
