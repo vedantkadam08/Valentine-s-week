@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>For my Siddhavi 🤍</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -27,6 +27,7 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
+            touch-action: manipulation;
         }
 
         @keyframes gradientMove {
@@ -35,11 +36,11 @@
             100% { background-position: 0% 50%; }
         }
 
-        #heart-container {
+        #heart-container, #sparkle-container {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
         }
 
         .container {
@@ -85,6 +86,36 @@
         .day-box:active { transform: scale(0.95); }
         .day-box.locked { filter: blur(2px) grayscale(1); opacity: 0.7; }
 
+        /* Affection Counter Style */
+        .affection-wrapper {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .affection-btn {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .affection-btn:active { transform: scale(1.2); }
+        .affection-count { font-size: 0.7rem; font-weight: 600; color: var(--accent); margin-top: 5px; }
+
         nav {
             position: fixed;
             bottom: 30px;
@@ -117,6 +148,22 @@
 
         .handwritten { font-family: 'Dancing Script', cursive; font-size: 1.3rem; line-height: 1.6; }
 
+        .sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 10px white;
+            animation: sparkle-fade 1s linear forwards;
+        }
+
+        @keyframes sparkle-fade {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
         .hug-overlay {
             position: fixed;
             inset: 0;
@@ -136,10 +183,16 @@
 <body onclick="startMusic()" ontouchstart="startMusic()">
 
     <div id="heart-container"></div>
+    <div id="sparkle-container"></div>
     
     <audio id="bgMusic" loop>
         <source src="https://cdn.pixabay.com/audio/2022/05/27/audio_1808f3030e.mp3" type="audio/mpeg">
     </audio>
+
+    <div class="affection-wrapper">
+        <div class="affection-btn" onclick="addAffection(event)">💋</div>
+        <div class="affection-count"><span id="kiss-count">0</span> Hugs</div>
+    </div>
 
     <div class="container">
         <section id="home" class="fade-in">
@@ -195,13 +248,44 @@
             14: { name: "Valentine's Day", date: "2026-02-14", icon: "💝", msg: `Happy Valentine’s Day, Siddhavi 🤍<br><br>I don’t think I tell you enough how much calmer life feels with you in it.<br><br>With you, even the ordinary days feel lighter, like I don’t have to try so hard to be okay — I just am.<br><br>You have this way of making things feel safe. Being with you feels like coming home, not to a place, but to a feeling. One where I can be myself completely and still feel chosen.<br><br>I love how you care, how you notice the small things, how you stay. I love the comfort you give without even realizing it, and how just knowing you’re there changes my whole day.<br><br>This Valentine’s Week, and every day after it, I choose you — not because it’s special, but because it feels right. You make love feel gentle, real, and steady, and that’s everything I could ever want.<br><br>Thank you for being you.<br>Thank you for being mine.<br>Happy Valentine’s Day, my Siddhavi.<br><br>Always your Babde 🤍` }
         };
 
+        // Music Logic
         let musicActive = false;
         function startMusic() {
             if(!musicActive) {
                 const audio = document.getElementById('bgMusic');
-                audio.play().catch(e => console.log("Audio waiting for user tap."));
+                audio.play();
                 musicActive = true;
             }
+        }
+
+        // Affection Counter Logic
+        let count = 0;
+        function addAffection(e) {
+            count++;
+            document.getElementById('kiss-count').innerText = count;
+            const floatH = document.createElement('div');
+            floatH.innerHTML = '❤️';
+            floatH.style.cssText = `position:fixed; left:${e.clientX}px; top:${e.clientY}px; font-size:20px; pointer-events:none; transition: 2s; z-index:9999;`;
+            document.body.appendChild(floatH);
+            setTimeout(() => {
+                floatH.style.transform = `translateY(-100px) scale(2)`;
+                floatH.style.opacity = '0';
+            }, 50);
+            setTimeout(() => floatH.remove(), 2000);
+        }
+
+        // Sparkle Trail Logic
+        document.addEventListener('mousemove', (e) => spawnSparkle(e.clientX, e.clientY));
+        document.addEventListener('touchmove', (e) => spawnSparkle(e.touches[0].clientX, e.touches[0].clientY));
+
+        function spawnSparkle(x, y) {
+            const container = document.getElementById('sparkle-container');
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            container.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1000);
         }
 
         function showPage(id) {
@@ -215,7 +299,6 @@
             const data = VALENTINE_DATA[day];
             const targetDate = new Date(data.date + "T00:00:00");
             const now = new Date();
-            
             showPage('viewer');
             const body = document.getElementById('viewBody');
             const extra = document.getElementById('viewExtra');
@@ -224,9 +307,7 @@
             if (now >= targetDate) {
                 document.getElementById('viewTitle').innerText = data.name;
                 body.innerHTML = data.msg;
-                if(data.hug) {
-                    extra.innerHTML = `<button class="btn-action" onclick="triggerHug()">Send virtual hug to Babde 🤍</button>`;
-                }
+                if(data.hug) extra.innerHTML = `<button class="btn-action" onclick="triggerHug()">Send virtual hug to Babde 🤍</button>`;
             } else {
                 document.getElementById('viewTitle').innerText = "Locked 🔒";
                 body.innerHTML = `⏳ Babde, this surprise unlocks on Feb ${day} 🤍<br><br><div id="timer" style="font-weight:bold; font-size:1.4rem;"></div>`;
@@ -261,17 +342,13 @@
         };
 
         const grid = document.getElementById('dayGrid');
-        const now = new Date();
         Object.keys(VALENTINE_DATA).forEach(day => {
             const data = VALENTINE_DATA[day];
-            const isLocked = now < new Date(data.date + "T00:00:00");
+            const isLocked = new Date() < new Date(data.date + "T00:00:00");
             const box = document.createElement('div');
             box.className = `day-box ${isLocked ? 'locked' : ''}`;
             box.onclick = () => { startMusic(); checkDay(day); };
-            box.innerHTML = `
-                <div style="font-size:1.5rem">${isLocked ? '🔒' : data.icon}</div>
-                <div style="font-weight:600; font-size:0.8rem">Feb ${day}</div>
-            `;
+            box.innerHTML = `<div style="font-size:1.5rem">${isLocked ? '🔒' : data.icon}</div><div style="font-weight:600; font-size:0.8rem">Feb ${day}</div>`;
             grid.appendChild(box);
         });
 
@@ -279,14 +356,7 @@
             const container = document.getElementById('heart-container');
             const heart = document.createElement('div');
             heart.innerHTML = '🤍';
-            heart.style.cssText = `
-                position: fixed; 
-                left: ${Math.random() * 100}%; 
-                bottom: -20px; 
-                font-size: ${Math.random() * 20 + 10}px; 
-                opacity: ${Math.random()}; 
-                transition: transform 6s linear, opacity 6s;
-            `;
+            heart.style.cssText = `position: fixed; left: ${Math.random() * 100}%; bottom: -20px; font-size: ${Math.random() * 20 + 10}px; opacity: ${Math.random()}; transition: transform 6s linear, opacity 6s;`;
             container.appendChild(heart);
             setTimeout(() => {
                 heart.style.transform = `translateY(-110vh) rotate(${Math.random() * 360}deg)`;
