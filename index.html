@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For my Shone 🤍</title>
+    <title>For my Siddhavi 🤍</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -60,7 +60,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             text-align: center;
             margin-bottom: 25px;
-            transition: transform 0.4s ease;
         }
 
         h1 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--accent); }
@@ -134,19 +133,21 @@
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
     </style>
 </head>
-<body onclick="startMusic()">
+<body onclick="startMusic()" ontouchstart="startMusic()">
 
     <div id="heart-container"></div>
+    
     <audio id="bgMusic" loop>
-        <source src="romantic.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
         <section id="home" class="fade-in">
             <div class="glass-card">
                 <h1>Hey Babde 🤍</h1>
-                <p>Welcome, Shone 💖</p>
+                <p>Welcome, Siddhavi 💖</p>
                 <p style="font-size: 0.9rem; margin-top: 5px;">This Valentine’s Week is only for you, Babde.</p>
+                <p style="font-size: 0.7rem; color: var(--accent); margin-top: 10px;">(Tap anywhere to play music ✨)</p>
             </div>
 
             <div class="grid" id="dayGrid"></div>
@@ -184,27 +185,25 @@
 
     <script>
         const VALENTINE_DATA = {
-            7: { name: "Rose Day", date: "2026-02-07", icon: "🌹", msg: "A rose for my Gulab Ka Phool. Oyee Babde, you're the most beautiful flower in my life." },
-            8: { name: "Propose Day", date: "2026-02-08", icon: "💍", msg: "For my Shone: I’d choose you in every lifetime, in every world." },
+            7: { name: "Rose Day", date: "2026-02-07", icon: "🌹", msg: "A rose for my Rosie. Hey Babde, you're the most beautiful flower in my life." },
+            8: { name: "Propose Day", date: "2026-02-08", icon: "💍", msg: "For my Siddhavi: I’d choose you in every lifetime, in every world." },
             9: { name: "Chocolate Day", date: "2026-02-09", icon: "🍫", msg: "Something sweet for the sweetest person I know. Made with all my love, just for you." },
             10: { name: "Teddy Day", date: "2026-02-10", icon: "🧸", msg: "A soft hug in the form of a teddy, until I can hug you myself, Babde." },
             11: { name: "Promise Day", date: "2026-02-11", icon: "🤝", msg: "I promise to always hold your hand through the highs and the lows." },
             12: { name: "Hug Day", date: "2026-02-12", icon: "🫂", msg: "Everything feels better when I'm in your arms.", hug: true },
-            13: { name: "Kiss Day", date: "2026-02-13", icon: "💋", msg: "Sending you a million virtual kisses, Babdeeeeeeeee! 🤍" },
-            14: { name: "Valentine's Day", date: "2026-02-14", icon: "💝", msg: `Happy Valentine’s Day, Shone 🤍<br><br>I don’t think I tell you enough how much calmer life feels with you in it.<br><br>With you, even the ordinary days feel lighter, like I don’t have to try so hard to be okay — I just am.<br><br>You have this way of making things feel safe. Being with you feels like coming home, not to a place, but to a feeling. One where I can be myself completely and still feel chosen.<br><br>I love how you care, how you notice the small things, how you stay. I love the comfort you give without even realizing it, and how just knowing you’re there changes my whole day.<br><br>This Valentine’s Week, and every day after it, I choose you — not because it’s special, but because it feels right. You make love feel gentle, real, and steady, and that’s everything I could ever want.<br><br>Thank you for being you.<br>Thank you for being mine.<br>Happy Valentine’s Day, my Siddhavi.<br><br>Always your Babde 🤍` }
+            13: { name: "Kiss Day", date: "2026-02-13", icon: "💋", msg: "Sending you a million virtual kisses, Siddhavi! 🤍" },
+            14: { name: "Valentine's Day", date: "2026-02-14", icon: "💝", msg: `Happy Valentine’s Day, Siddhavi 🤍<br><br>I don’t think I tell you enough how much calmer life feels with you in it.<br><br>With you, even the ordinary days feel lighter, like I don’t have to try so hard to be okay — I just am.<br><br>You have this way of making things feel safe. Being with you feels like coming home, not to a place, but to a feeling. One where I can be myself completely and still feel chosen.<br><br>I love how you care, how you notice the small things, how you stay. I love the comfort you give without even realizing it, and how just knowing you’re there changes my whole day.<br><br>This Valentine’s Week, and every day after it, I choose you — not because it’s special, but because it feels right. You make love feel gentle, real, and steady, and that’s everything I could ever want.<br><br>Thank you for being you.<br>Thank you for being mine.<br>Happy Valentine’s Day, my Siddhavi.<br><br>Always your Babde 🤍` }
         };
 
-        // Music Logic
         let musicActive = false;
         function startMusic() {
             if(!musicActive) {
                 const audio = document.getElementById('bgMusic');
-                audio.play().catch(e => console.log("Audio waiting for interaction"));
+                audio.play().catch(e => console.log("Audio blocked by browser policy"));
                 musicActive = true;
             }
         }
 
-        // Navigation
         function showPage(id) {
             document.getElementById('home').classList.add('hidden');
             document.getElementById('viewer').classList.add('hidden');
@@ -235,7 +234,6 @@
             }
         }
 
-        // Countdown Logic
         let timerInt;
         function startCountdown(target) {
             clearInterval(timerInt);
@@ -250,21 +248,18 @@
             }, 1000);
         }
 
-        // Hug Animation
         function triggerHug() {
             const overlay = document.getElementById('hugOverlay');
             overlay.style.display = 'flex';
             setTimeout(() => overlay.style.display = 'none', 4000);
         }
 
-        // Easter Egg
         let eggCount = 0;
         document.getElementById('easterEgg').onclick = () => {
             eggCount++;
             if(eggCount >= 5) document.getElementById('eggMessage').classList.remove('hidden');
         };
 
-        // Initialize Home Grid
         const grid = document.getElementById('dayGrid');
         const now = new Date();
         Object.keys(VALENTINE_DATA).forEach(day => {
@@ -272,7 +267,7 @@
             const isLocked = now < new Date(data.date + "T00:00:00");
             const box = document.createElement('div');
             box.className = `day-box ${isLocked ? 'locked' : ''}`;
-            box.onclick = () => checkDay(day);
+            box.onclick = () => { startMusic(); checkDay(day); };
             box.innerHTML = `
                 <div style="font-size:1.5rem">${isLocked ? '🔒' : data.icon}</div>
                 <div style="font-weight:600; font-size:0.8rem">Feb ${day}</div>
@@ -280,7 +275,6 @@
             grid.appendChild(box);
         });
 
-        // Background Hearts
         function createHeart() {
             const container = document.getElementById('heart-container');
             const heart = document.createElement('div');
