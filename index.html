@@ -14,7 +14,17 @@
             --glass-border: rgba(255, 255, 255, 0.7);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* PREVENT TEXT SELECTION GLOBALLY */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none;    /* Firefox */
+            -ms-user-select: none;     /* IE10+/Edge */
+            user-select: none;         /* Standard */
+        }
 
         body {
             font-family: 'Poppins', sans-serif;
@@ -86,12 +96,18 @@
         .day-box:active { transform: scale(0.95); }
         .day-box.locked { filter: blur(2px) grayscale(1); opacity: 0.7; }
 
-        /* Affection Counter Style */
-        .affection-wrapper {
+        /* COUNTERS UI */
+        .affection-panel {
             position: fixed;
             bottom: 100px;
             right: 20px;
             z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .affection-item {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -101,20 +117,20 @@
             background: var(--glass);
             backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            transition: 0.2s;
         }
 
-        .affection-btn:active { transform: scale(1.2); }
-        .affection-count { font-size: 0.7rem; font-weight: 600; color: var(--accent); margin-top: 5px; }
+        .affection-btn:active { transform: scale(1.3); }
+        .affection-label { font-size: 0.7rem; font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.3); margin-top: 4px; }
 
         nav {
             position: fixed;
@@ -186,12 +202,18 @@
     <div id="sparkle-container"></div>
     
     <audio id="bgMusic" loop>
-        <source src="https://cdn.pixabay.com/audio/2022/05/27/audio_1808f3030e.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="affection-wrapper">
-        <div class="affection-btn" onclick="addAffection(event)">💋</div>
-        <div class="affection-count"><span id="kiss-count">0</span> Hugs</div>
+    <div class="affection-panel">
+        <div class="affection-item">
+            <div class="affection-btn" onclick="updateCounter('kisses', '💋', event)">💋</div>
+            <div class="affection-label"><span id="kiss-display">0</span> Kisses</div>
+        </div>
+        <div class="affection-item">
+            <div class="affection-btn" onclick="updateCounter('hugs', '🫂', event)">🫂</div>
+            <div class="affection-label"><span id="hug-display">0</span> Hugs</div>
+        </div>
     </div>
 
     <div class="container">
@@ -245,10 +267,39 @@
             11: { name: "Promise Day", date: "2026-02-11", icon: "🤝", msg: "I promise to always hold your hand through the highs and the lows." },
             12: { name: "Hug Day", date: "2026-02-12", icon: "🫂", msg: "Everything feels better when I'm in your arms.", hug: true },
             13: { name: "Kiss Day", date: "2026-02-13", icon: "💋", msg: "Sending you a million virtual kisses, Siddhavi! 🤍" },
-            14: { name: "Valentine's Day", date: "2026-02-14", icon: "💝", msg: `Happy Valentine’s Day, Siddhavi 🤍<br><br>I don’t think I tell you enough how much calmer life feels with you in it.<br><br>With you, even the ordinary days feel lighter, like I don’t have to try so hard to be okay — I just am.<br><br>You have this way of making things feel safe. Being with you feels like coming home, not to a place, but to a feeling. One where I can be myself completely and still feel chosen.<br><br>I love how you care, how you notice the small things, how you stay. I love the comfort you give without even realizing it, and how just knowing you’re there changes my whole day.<br><br>This Valentine’s Week, and every day after it, I choose you — not because it’s special, but because it feels right. You make love feel gentle, real, and steady, and that’s everything I could ever want.<br><br>Thank you for being you.<br>Thank you for being mine.<br>Happy Valentine’s Day, my Siddhavi.<br><br>Always your Babde 🤍` }
+            14: { name: "Valentine's Day", date: "2026-02-14", icon: "💝", msg: `Happy Valentine’s Day, Siddhavi 🤍<br><br>I don’t think I tell you enough how much calmer life feels with you in it.<br><br>With you, even the ordinary days feel lighter...<br><br>Always your Babde 🤍` }
         };
 
-        // Music Logic
+        // PERSISTENCE LOGIC
+        function initCounters() {
+            const savedKisses = localStorage.getItem('sid_kisses') || 0;
+            const savedHugs = localStorage.getItem('sid_hugs') || 0;
+            document.getElementById('kiss-display').innerText = savedKisses;
+            document.getElementById('hug-display').innerText = savedHugs;
+        }
+
+        function updateCounter(type, emoji, e) {
+            const storageKey = type === 'kisses' ? 'sid_kisses' : 'sid_hugs';
+            const displayId = type === 'kisses' ? 'kiss-display' : 'hug-display';
+            
+            let current = parseInt(localStorage.getItem(storageKey)) || 0;
+            current++;
+            localStorage.setItem(storageKey, current);
+            document.getElementById(displayId).innerText = current;
+
+            const float = document.createElement('div');
+            float.innerHTML = emoji;
+            float.style.cssText = `position:fixed; left:${e.clientX}px; top:${e.clientY}px; font-size:24px; pointer-events:none; transition: 2s; z-index:9999;`;
+            document.body.appendChild(float);
+            setTimeout(() => {
+                float.style.transform = `translateY(-150px) rotate(${Math.random() * 40 - 20}deg) scale(2)`;
+                float.style.opacity = '0';
+            }, 50);
+            setTimeout(() => float.remove(), 2000);
+        }
+
+        window.onload = initCounters;
+
         let musicActive = false;
         function startMusic() {
             if(!musicActive) {
@@ -257,26 +308,6 @@
                 musicActive = true;
             }
         }
-
-        // Affection Counter Logic
-        let count = 0;
-        function addAffection(e) {
-            count++;
-            document.getElementById('kiss-count').innerText = count;
-            const floatH = document.createElement('div');
-            floatH.innerHTML = '❤️';
-            floatH.style.cssText = `position:fixed; left:${e.clientX}px; top:${e.clientY}px; font-size:20px; pointer-events:none; transition: 2s; z-index:9999;`;
-            document.body.appendChild(floatH);
-            setTimeout(() => {
-                floatH.style.transform = `translateY(-100px) scale(2)`;
-                floatH.style.opacity = '0';
-            }, 50);
-            setTimeout(() => floatH.remove(), 2000);
-        }
-
-        // Sparkle Trail Logic
-        document.addEventListener('mousemove', (e) => spawnSparkle(e.clientX, e.clientY));
-        document.addEventListener('touchmove', (e) => spawnSparkle(e.touches[0].clientX, e.touches[0].clientY));
 
         function spawnSparkle(x, y) {
             const container = document.getElementById('sparkle-container');
@@ -287,12 +318,13 @@
             container.appendChild(sparkle);
             setTimeout(() => sparkle.remove(), 1000);
         }
+        document.addEventListener('mousemove', (e) => spawnSparkle(e.clientX, e.clientY));
+        document.addEventListener('touchmove', (e) => spawnSparkle(e.touches[0].clientX, e.touches[0].clientY));
 
         function showPage(id) {
             document.getElementById('home').classList.add('hidden');
             document.getElementById('viewer').classList.add('hidden');
             document.getElementById(id).classList.remove('hidden');
-            window.scrollTo(0,0);
         }
 
         function checkDay(day) {
@@ -300,17 +332,13 @@
             const targetDate = new Date(data.date + "T00:00:00");
             const now = new Date();
             showPage('viewer');
-            const body = document.getElementById('viewBody');
-            const extra = document.getElementById('viewExtra');
-            extra.innerHTML = "";
-
             if (now >= targetDate) {
                 document.getElementById('viewTitle').innerText = data.name;
-                body.innerHTML = data.msg;
-                if(data.hug) extra.innerHTML = `<button class="btn-action" onclick="triggerHug()">Send virtual hug to Babde 🤍</button>`;
+                document.getElementById('viewBody').innerHTML = data.msg;
+                if(data.hug) document.getElementById('viewExtra').innerHTML = `<button class="btn-action" onclick="triggerHug()">Send virtual hug to Babde 🤍</button>`;
             } else {
                 document.getElementById('viewTitle').innerText = "Locked 🔒";
-                body.innerHTML = `⏳ Babde, this surprise unlocks on Feb ${day} 🤍<br><br><div id="timer" style="font-weight:bold; font-size:1.4rem;"></div>`;
+                document.getElementById('viewBody').innerHTML = `⏳ Babde, this surprise unlocks on Feb ${day} 🤍<br><br><div id="timer" style="font-weight:bold; font-size:1.4rem;"></div>`;
                 startCountdown(targetDate);
             }
         }
@@ -335,19 +363,13 @@
             setTimeout(() => overlay.style.display = 'none', 4000);
         }
 
-        let eggCount = 0;
-        document.getElementById('easterEgg').onclick = () => {
-            eggCount++;
-            if(eggCount >= 5) document.getElementById('eggMessage').classList.remove('hidden');
-        };
-
         const grid = document.getElementById('dayGrid');
         Object.keys(VALENTINE_DATA).forEach(day => {
             const data = VALENTINE_DATA[day];
             const isLocked = new Date() < new Date(data.date + "T00:00:00");
             const box = document.createElement('div');
             box.className = `day-box ${isLocked ? 'locked' : ''}`;
-            box.onclick = () => { startMusic(); checkDay(day); };
+            box.onclick = () => checkDay(day);
             box.innerHTML = `<div style="font-size:1.5rem">${isLocked ? '🔒' : data.icon}</div><div style="font-weight:600; font-size:0.8rem">Feb ${day}</div>`;
             grid.appendChild(box);
         });
